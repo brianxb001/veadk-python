@@ -194,15 +194,22 @@ class VikingDBLTMBackend(BaseLongTermMemoryBackend):
             raise ValueError(f"Search VikingDB memory error: {response}")
 
         result = response.get("data", {}).get("result_list", [])
+        original_messages = []
+        timeline_memorys = []
         if result:
+            for r in result:
+                memory_info = r.get("memory_info")
+                if 'original_messages' in memory_info:
+                    original_messages.append(memory_info['original_messages'])
+                elif "event_history" in memory_info:
+                    timeline_memorys.append(memory_info.get('event_history'))
             return [
                 json.dumps(
                     {
                         "role": "user",
-                        "parts": [{"text": r.get("memory_info").get("summary")}],
+                        "parts": [{"text": "Memories:\n %s \n\nTimeline Memory:\n %s\n\n"%('\n'.join(original_messages), '\n'.join(timeline_memorys))}],
                     },
                     ensure_ascii=False,
                 )
-                for r in result
             ]
         return []
