@@ -96,6 +96,16 @@ class Mem0Config(BaseSettings):
     project_id: str = ""
 
     base_url: str = ""  # "https://api.mem0.ai/v1"
+    
+    
+class AWSMEMConfig(BaseSettings):
+    model_config = SettingsConfigDict(env_prefix="DATABASE_AWS_")
+    
+    memory_id: str = ""
+    
+    region_name: str = ""
+    
+    actor_id: str = ""
 
 
 class VikingKnowledgebaseConfig(BaseSettings):
